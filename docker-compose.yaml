@@ -1,0 +1,12 @@
+# How to run: `$ docker-compose --env-file .env up --remove-orphans`
+
+version: '3.7'
+services:
+
+  mongo:
+    image: mongo:6.0.6
+    hostname: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo:/data/db
