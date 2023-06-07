@@ -8,9 +8,9 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
 
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/httputils"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/httputils"
 )
 
 // User defines the user parameters

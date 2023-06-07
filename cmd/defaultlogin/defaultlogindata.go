@@ -7,12 +7,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/app"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/config"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	accSvc "github.com/satumedishub/sea-cucumber-api-service/internal/service/account"
-	userSvc "github.com/satumedishub/sea-cucumber-api-service/internal/service/user"
-	s "github.com/satumedishub/sea-cucumber-api-service/internal/storage"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/app"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/config"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	accSvc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/account"
+	userSvc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user"
+	s "github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 )
 
 // main run the main application

@@ -6,9 +6,9 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/app"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	h "github.com/satumedishub/sea-cucumber-api-service/internal/router/handlers"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/app"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	h "github.com/ardihikaru/go-whatsapp-multi-device/internal/router/handlers"
 )
 
 // GetRouter configures a chi router and starts the http server

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	auth "github.com/satumedishub/sea-cucumber-api-service/pkg/authenticator"
+	auth "github.com/ardihikaru/go-whatsapp-multi-device/pkg/authenticator"
 )
 
 // PutData defines the capture json body from the request from the POST /users

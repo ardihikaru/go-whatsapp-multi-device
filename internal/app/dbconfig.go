@@ -1,9 +1,9 @@
 package app
 
 import (
-	"github.com/satumedishub/sea-cucumber-api-service/internal/config"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/storage"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/config"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 )
 
 func InitializeDB(cfg *config.Config, log *logger.Logger) *storage.DataStoreMongo {

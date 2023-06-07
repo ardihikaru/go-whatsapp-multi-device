@@ -3,10 +3,10 @@ package app
 import (
 	"github.com/go-chi/jwtauth/v5"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/config"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/config"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
 
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/authenticator"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/authenticator"
 )
 
 // GetTokenAuthentication creates an autehntication token from the authenticator

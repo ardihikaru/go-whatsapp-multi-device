@@ -5,10 +5,10 @@ import (
 	"errors"
 	"time"
 
+	accSvc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/account"
 	"github.com/go-chi/jwtauth/v5"
-	accSvc "github.com/satumedishub/sea-cucumber-api-service/internal/service/account"
 
-	auth "github.com/satumedishub/sea-cucumber-api-service/pkg/authenticator"
+	auth "github.com/ardihikaru/go-whatsapp-multi-device/pkg/authenticator"
 )
 
 // LoginData is the input JSON body captured from the login request

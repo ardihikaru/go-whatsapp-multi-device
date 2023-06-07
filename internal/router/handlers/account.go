@@ -9,14 +9,14 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"go.uber.org/zap"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	m "github.com/satumedishub/sea-cucumber-api-service/internal/middleware"
-	svc "github.com/satumedishub/sea-cucumber-api-service/internal/service/account"
-	userSvc "github.com/satumedishub/sea-cucumber-api-service/internal/service/user"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/storage"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	m "github.com/ardihikaru/go-whatsapp-multi-device/internal/middleware"
+	svc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/account"
+	userSvc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/httputils"
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/query"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/httputils"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/query"
 )
 
 // AccountMainHandler handles all account related routes

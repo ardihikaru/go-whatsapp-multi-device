@@ -8,9 +8,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	svc "github.com/satumedishub/sea-cucumber-api-service/internal/service/user"
+	svc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user"
 
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/httputils"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/httputils"
 )
 
 type UsersUserID string

@@ -3,7 +3,7 @@ package storage
 
 import (
 	"context"
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/query"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/query"
 	"time"
 
 	"github.com/pkg/errors"
