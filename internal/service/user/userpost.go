@@ -7,7 +7,7 @@ import (
 	"net/mail"
 	"time"
 
-	uRole "github.com/satumedishub/sea-cucumber-api-service/internal/service/user/role"
+	uRole "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user/role"
 )
 
 // PostData defines the capture json body from the request from the POST /users

@@ -8,14 +8,14 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"golang.org/x/exp/slices"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	m "github.com/satumedishub/sea-cucumber-api-service/internal/middleware"
-	svc "github.com/satumedishub/sea-cucumber-api-service/internal/service/user"
-	uRole "github.com/satumedishub/sea-cucumber-api-service/internal/service/user/role"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/storage"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	m "github.com/ardihikaru/go-whatsapp-multi-device/internal/middleware"
+	svc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user"
+	uRole "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user/role"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/httputils"
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/query"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/httputils"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/query"
 )
 
 // RoleMainHandler handles all role related routes

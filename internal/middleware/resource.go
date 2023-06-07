@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	svcUser "github.com/satumedishub/sea-cucumber-api-service/internal/service/user"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	svcUser "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user"
 )
 
 type ID string

@@ -5,9 +5,9 @@ import (
 
 	"github.com/go-chi/jwtauth/v5"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/config"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/storage"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/config"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 )
 
 // Dependencies holds the primitives and structs and/or interfaces that are required

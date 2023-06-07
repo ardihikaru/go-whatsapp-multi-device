@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/httputils"
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/query"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/httputils"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/query"
 )
 
 // URLQueryCtx enriches the request with the captured id on the URL query parameters

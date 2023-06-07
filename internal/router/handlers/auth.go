@@ -9,14 +9,14 @@ import (
 	"github.com/go-chi/jwtauth/v5"
 	"go.uber.org/zap"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/config"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	svc "github.com/satumedishub/sea-cucumber-api-service/internal/service/account"
-	authSvc "github.com/satumedishub/sea-cucumber-api-service/internal/service/auth"
-	userSvc "github.com/satumedishub/sea-cucumber-api-service/internal/service/user"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/storage"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/config"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	svc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/account"
+	authSvc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/auth"
+	userSvc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 
-	"github.com/satumedishub/sea-cucumber-api-service/pkg/utils/httputils"
+	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/httputils"
 )
 
 // AuthMainHandler handles all authentication related routes

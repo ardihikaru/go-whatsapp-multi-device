@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://github.com/satumedishub/go-template-api-service">
+<a href="https://github.com/ardihikaru/go-whatsapp-multi-device">
 <img src="https://raw.githubusercontent.com/gilbarbara/logos/master/logos/docker-icon.svg" width="30%" />
 </a>
 <br>
@@ -8,18 +8,18 @@
 <a href="#">
 <img src="https://img.shields.io/badge/%20Platforms-Windows%20/%20Linux-blue.svg?style=flat-square" alt="Platforms" />
 </a>
-<a href="https://github.com/satumedishub/go-template-api-service/blob/master/LICENSE">
+<a href="https://github.com/ardihikaru/go-whatsapp-multi-device/blob/master/LICENSE">
 <img src="https://img.shields.io/badge/%20Licence-MIT-green.svg?style=flat-square" alt="license" />
 </a>
 </p>
 <p align="center">
-<a href="https://github.com/satumedishub/go-template-api-service/blob/master/CODE_OF_CONDUCT.md">
+<a href="https://github.com/ardihikaru/go-whatsapp-multi-device/blob/master/CODE_OF_CONDUCT.md">
 <img src="https://img.shields.io/badge/Community-Code%20of%20Conduct-orange.svg?style=flat-squre" alt="Code of Conduct" />
 </a>
-<a href="https://github.com/satumedishub/go-template-api-service/blob/master/SUPPORT.md">
+<a href="https://github.com/ardihikaru/go-whatsapp-multi-device/blob/master/SUPPORT.md">
 <img src="https://img.shields.io/badge/Community-Support-red.svg?style=flat-square" alt="Support" />
 </a>
-<a href="https://github.com/satumedishub/go-template-api-service/blob/master/CONTRIBUTING.md">
+<a href="https://github.com/ardihikaru/go-whatsapp-multi-device/blob/master/CONTRIBUTING.md">
 <img src="https://img.shields.io/badge/%20Community-Contribution-yellow.svg?style=flat-square" alt="Contribution" />
 </a>
 </p>
@@ -31,7 +31,7 @@ Please add project description here.
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
-![Github Actions](https://github.com/satumedishub/go-template-api-service/workflows/Github%20Action/badge.svg)
+![Github Actions](https://github.com/ardihikaru/go-whatsapp-multi-device/workflows/Github%20Action/badge.svg)
 
 ## Table of Contents
 
@@ -64,7 +64,7 @@ purposes. See deployment for notes on how to deploy the project on a live system
 * Project Initialization
   * Init
     ```shell
-    go mod init github.com/satumedishub/go-template-api-service
+    go mod init github.com/ardihikaru/go-whatsapp-multi-device
     ```
   * Tidy up go modules
     ```shell
@@ -125,7 +125,7 @@ Looking to contribute to our code but need some help? There's a few ways to get 
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see
-the [tags on this repository](https://github.com/satumedishub/go-template-api-service/tags).
+the [tags on this repository](https://github.com/ardihikaru/go-whatsapp-multi-device/tags).
 
 ## Authors
 

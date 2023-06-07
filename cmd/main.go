@@ -9,10 +9,10 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/app"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/config"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/logger"
-	"github.com/satumedishub/sea-cucumber-api-service/internal/router"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/app"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/config"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/router"
 )
 
 // Version sets the default build version

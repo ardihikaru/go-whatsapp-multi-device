@@ -6,9 +6,9 @@ import (
 
 	"github.com/go-chi/jwtauth/v5"
 
-	"github.com/satumedishub/sea-cucumber-api-service/internal/storage"
+	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 
-	auth "github.com/satumedishub/sea-cucumber-api-service/pkg/authenticator"
+	auth "github.com/ardihikaru/go-whatsapp-multi-device/pkg/authenticator"
 )
 
 // SessionCtx enriches the request with the captured JWT private claims
