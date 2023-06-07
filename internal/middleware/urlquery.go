@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/httputils"
-	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/query"
+	"github.com/ardihikaru/go-modules/pkg/utils/httputils"
+	"github.com/ardihikaru/go-modules/pkg/utils/query"
 )
 
 // URLQueryCtx enriches the request with the captured id on the URL query parameters
@@ -63,7 +63,7 @@ func URLQueryCtx(next http.Handler) http.Handler {
 
 		// extracts filter query parameters
 		// data type for filter will be mapped into a particular struct when consumed by a specific API
-		//  since it may has more than one data type, e.g., a string, or an array of string
+		//  since it may have more than one data type, e.g., a string, or an array of string
 		filter := r.URL.Query().Get(QueryFilterKey)
 
 		// defines the URL query parameters
