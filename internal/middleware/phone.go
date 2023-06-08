@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi"
 )
 
-// MiddlewarePhoneCtx enriches the request with the captured phone on the URL parameter
-func MiddlewarePhoneCtx(next http.Handler) http.Handler {
+// PhoneMiddlewareCtx enriches the request with the captured phone on the URL parameter
+func PhoneMiddlewareCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// define the URL parameters
 		var phoneKey Phone = PhoneKey

@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/ardihikaru/go-modules/pkg/logger"
+	botHook "github.com/ardihikaru/go-modules/pkg/whatsappbot/wawebhook"
 )
 
 type ID string
@@ -42,5 +43,6 @@ const (
 
 // Resource is a middleware resource
 type Resource struct {
-	Log *logger.Logger
+	Log        *logger.Logger
+	BotClients *botHook.BotClientList
 }
