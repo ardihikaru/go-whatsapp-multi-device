@@ -47,6 +47,13 @@ func SessionMainHandler(cfg *config.Config, db *storage.DataStoreMongo, log *log
 
 			r.Delete("/", sessionDisconnect(sessionService, log)) // DELETE /api/session/{phone} - delete session
 		})
+
+		r.Route("/on-whatsapp/{phone}", func(r chi.Router) {
+			// extracts the phone on the URL parameter
+			r.Use(m.PhoneMiddlewareCtx)
+
+			r.Get("/", isOnWhatsapp(sessionService, log)) // GET /api/session/on-whatsapp/{phone} - is on WA?
+		})
 	})
 
 	return r
@@ -98,6 +105,36 @@ func sessionDisconnect(sessionService *sessionSvc.Service, log *logger.Logger) f
 			Success:     true,
 			Data:        nil,
 			MessageText: msg,
+			Total:       1,
+		}
+
+		// renders OK response
+		_ = httputils.RenderOKResponse(w, r, respBody)
+	}
+}
+
+// isOnWhatsapp processes the request to verify if the designated phone on whatsapp or not
+func isOnWhatsapp(sessionService *sessionSvc.Service, log *logger.Logger) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// extracts phone from the context and cast them into a string
+		var phoneKey m.Phone = m.PhoneKey
+		phone := r.Context().Value(phoneKey).(string)
+
+		// checks if on WA or not
+		onWhatsapp, err := sessionService.IsOnWhatsapp(phone)
+		if err != nil {
+			httputils.RenderErrResponse(w, r,
+				"failed to check on the Whatsapp Server",
+				httputils.BadRequest,
+				http.StatusBadRequest, nil)
+			return
+		}
+
+		// prepares response body
+		respBody := httputils.Response{
+			Success:     true,
+			Data:        onWhatsapp,
+			MessageText: "fetch success",
 			Total:       1,
 		}
 
