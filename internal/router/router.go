@@ -47,4 +47,8 @@ func buildTree(r *chi.Mux, deps *app.Dependencies) {
 	// handles session related route(s)
 	r.Mount("/api/session", h.SessionMainHandler(deps.Config, deps.DB, deps.Log, deps.WhatsAppBot,
 		deps.HttpClient, deps.BotClients))
+
+	// handles whatsapp message related route(s)
+	r.Mount("/api/message", h.MessageMainHandler(deps.Config, deps.DB, deps.Log, deps.WhatsAppBot,
+		deps.HttpClient, deps.BotClients))
 }

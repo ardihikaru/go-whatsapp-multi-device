@@ -4,11 +4,21 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"unicode/utf8"
+
+	"go.mau.fi/whatsmeow/types"
+	"go.uber.org/zap"
 
 	"github.com/ardihikaru/go-modules/pkg/logger"
 	botHook "github.com/ardihikaru/go-modules/pkg/whatsappbot/wawebhook"
 	svc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/device"
 )
+
+type MessagePayload struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Message string `json:"message"`
+}
 
 // Service prepares the interfaces related with this auth service
 type Service struct {
@@ -130,4 +140,63 @@ func (s *Service) Disconnect(phone string) string {
 	}
 
 	return msg
+}
+
+// SendTextMessage sends a text message
+func (s *Service) SendTextMessage(payload MessagePayload) error {
+	payload.sanitize()
+	err := payload.validate()
+	if err != nil {
+		return err
+	}
+
+	// if device in From (=phone) does not exists, rejects
+	if _, ok := (*s.BotClients)[payload.From]; !ok {
+		return fmt.Errorf("no active session found for this device")
+	} else {
+		// if session is not ready yet, rejects
+		if (*s.BotClients)[payload.From] == nil {
+			return fmt.Errorf("session for this device is not ready yet")
+		}
+
+		// validates phone number and get the recipient
+		recipient, err := (*s.BotClients)[payload.From].ValidateAndGetRecipient(payload.To, true)
+		if err != nil {
+			s.log.Error(fmt.Sprintf("phone [%s] got validation error(s)", payload.To), zap.Error(err))
+			return fmt.Errorf("phone got validation error(s)")
+		}
+
+		// starts sending the message in a background
+		go s.sendTextMessageInBackground(recipient, payload)
+	}
+
+	return nil
+}
+
+// sendTextMessageInBackground sends a text message in a background
+func (s *Service) sendTextMessageInBackground(recipient *types.JID, payload MessagePayload) {
+	err := (*s.BotClients)[payload.From].SendMsg(*recipient, payload.Message)
+	if err != nil {
+		s.log.Error(fmt.Sprintf("failed to send the message to [%s]", payload.To), zap.Error(err))
+	}
+}
+
+// validate validates message payload
+func (p *MessagePayload) validate() error {
+	return nil
+}
+
+// sanitize sanitizes message payload
+func (p *MessagePayload) sanitize() {
+	// removes `+` symbol if exists
+	if p.From[0:1] == "+" {
+		_, i := utf8.DecodeRuneInString(p.From)
+		p.From = p.From[i:]
+	}
+
+	// removes `+` symbol if exists
+	if p.To[0:1] == "+" {
+		_, i := utf8.DecodeRuneInString(p.To)
+		p.To = p.To[i:]
+	}
 }
