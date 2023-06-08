@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	botHook "github.com/ardihikaru/go-modules/pkg/whatsappbot/wawebhook"
 	"net/http"
 	"os"
 	"os/signal"
@@ -50,6 +51,9 @@ func main() {
 	// initializes http client
 	httpClient := hc.BuildHttpClient(cfg.HttpClientTLS)
 
+	// creates list to store created whatsapp bot clients
+	botClients := make(botHook.BotClientList)
+
 	// initializes whatsapp bot
 	whatsAppBot := wBot.InitWhatsappContainer(cfg.WhatsappDbName, log)
 
@@ -60,6 +64,7 @@ func main() {
 		Log:         log,
 		HttpClient:  httpClient,
 		WhatsAppBot: whatsAppBot,
+		BotClients:  &botClients,
 	}
 
 	// starts the api server

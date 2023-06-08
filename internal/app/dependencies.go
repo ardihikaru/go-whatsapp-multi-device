@@ -18,4 +18,5 @@ type Dependencies struct {
 	Log         *logger.Logger
 	HttpClient  *http.Client
 	WhatsAppBot *botHook.WaManager
+	BotClients  *botHook.BotClientList
 }
