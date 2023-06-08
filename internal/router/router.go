@@ -3,19 +3,19 @@
 package router
 
 import (
+	"github.com/ardihikaru/go-modules/pkg/logger"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/app"
-	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
 	h "github.com/ardihikaru/go-whatsapp-multi-device/internal/router/handlers"
 )
 
 // GetRouter configures a chi router and starts the http server
-// @title          Template API Service
-// @description    Template API Service implements sample RESTApi
-// @contact.name   Developer SatuMedis
-// @contact.email  dev@satumedis.com
+// @title          Go WhatsApp Multi-device API Service
+// @description    Go WhatsApp Multi-device API Service implements sample RESTApi
+// @contact.name   Muhammad Febrian Ardiansyah
+// @contact.email  mfardiansyah@outlook.com
 // @BasePath       /
 func GetRouter(deps *app.Dependencies) *chi.Mux {
 	r := chi.NewRouter()
@@ -39,17 +39,11 @@ func GetRouter(deps *app.Dependencies) *chi.Mux {
 	return r
 }
 
+// buildTree builds routes
 func buildTree(r *chi.Mux, deps *app.Dependencies) {
-	// handles auth related route(s)
-	r.Mount("/auth", h.AuthMainHandler(deps.Config, deps.DB, deps.Log, deps.TokenAuth))
+	// handles device related route(s)
+	r.Mount("/api/device", h.AuthMainHandler(deps.DB, deps.Log))
 
-	// handles users route(s)
-	r.Mount("/users", h.UserMainHandler(deps.DB, deps.Log, deps.TokenAuth))
-
-	// handles accounts route(s)
-	r.Mount("/accounts", h.AccountMainHandler(deps.DB, deps.Log, deps.TokenAuth))
-
-	// handles roles route(s)
-	r.Mount("/roles", h.RoleMainHandler(deps.DB, deps.Log, deps.TokenAuth))
-
+	// handles session related route(s)
+	r.Mount("/api/session", h.SessionMainHandler(deps.Config, deps.DB, deps.Log, deps.WhatsAppBot, deps.HttpClient))
 }

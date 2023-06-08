@@ -7,11 +7,14 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/ardihikaru/go-modules/pkg/logger"
+	e "github.com/ardihikaru/go-modules/pkg/utils/error"
+	hc "github.com/ardihikaru/go-modules/pkg/utils/httpclient"
+	wBot "github.com/ardihikaru/go-modules/pkg/whatsappbot"
 	"go.uber.org/zap"
 
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/app"
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/config"
-	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/router"
 )
 
@@ -22,17 +25,17 @@ func main() {
 	// loads configuration
 	cfg, err := config.Get()
 	if err != nil {
-		app.FatalOnError(err, "error loading configuration")
+		e.FatalOnError(err, "error loading configuration")
 	}
 
 	// configures logger
 	log, err := logger.New(cfg.LogLevel, cfg.LogFormat)
 	if err != nil {
-		app.FatalOnError(err, "failed to prepare the logger")
+		e.FatalOnError(err, "failed to prepare the logger")
 	}
 
 	// shows the build version
-	log.Info("starting Sea Cucumber API service. ",
+	log.Info("starting WhatsApp multi-device API service. ",
 		zap.String("Version", Version),
 		zap.String("BuildMode", cfg.BuildMode),
 	)
@@ -44,19 +47,19 @@ func main() {
 	// initializes persistent store
 	db := app.InitializeDB(cfg, log)
 
-	// initializes JWT Authenticator
-	tokenAuth := app.GetTokenAuthentication(cfg, log)
-
 	// initializes http client
-	httpClient := app.BuildHttpClient()
+	httpClient := hc.BuildHttpClient(cfg.HttpClientTLS)
+
+	// initializes whatsapp bot
+	whatsAppBot := wBot.InitWhatsappContainer(cfg.WhatsappDbName, log)
 
 	// initializes the dependency parameters
 	deps := &app.Dependencies{
-		Config:     cfg,
-		DB:         db,
-		Log:        log,
-		TokenAuth:  tokenAuth,
-		HttpClient: httpClient,
+		Config:      cfg,
+		DB:          db,
+		Log:         log,
+		HttpClient:  httpClient,
+		WhatsAppBot: whatsAppBot,
 	}
 
 	// starts the api server
@@ -65,9 +68,11 @@ func main() {
 	// logs that application is ready
 	log.Info("preparing to serve the request in => " + fmt.Sprintf("%s:%v", cfg.Address, cfg.Port))
 
-	// shutdowns the application
+	// shutdowns the RESTApi Server
 	<-c
 	log.Info("gracefully shutting down the system")
+
+	// exit app
 	os.Exit(0)
 }
 
@@ -76,7 +81,7 @@ func initializeHandler(deps *app.Dependencies, address string, port int) {
 	go func() {
 		// stops the application if any error found
 		if err := http.ListenAndServe(fmt.Sprintf("%s:%v", address, port), r); err != nil {
-			app.FatalOnError(err, "failed to start server")
+			e.FatalOnError(err, "failed to start server")
 			os.Exit(1)
 		}
 	}()

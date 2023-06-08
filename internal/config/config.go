@@ -10,68 +10,62 @@ import (
 )
 
 const (
-	buildModeEnv          = "BUILD_MODE"
-	addressEnv            = "ADDRESS"
-	portEnv               = "PORT"
-	logLevelEnv           = "LOG_LEVEL"
-	logFormatEnv          = "LOG_FORMAT"
-	corsAllowOriginsEnv   = "CORS_ALLOW_ORIGINS"
-	corsAllowHeadersEnv   = "CORS_ALLOW_HEADERS"
-	corsExposedHeadersEnv = "CORS_EXPOSED_HEADERS"
-	dbConnUriEnv          = "DB_CONN_URI"
-	dbNameEnv             = "DB_NAME"
-	dbHBIntervalEnv       = "DB_HEARTBEAT_INTERVAL"
-	dbLocalThresholdEnv   = "DB_LOCAL_THRESHOLD"
-	dbServerSelTimeoutEnv = "DB_SERVER_SELECTION_TIMEOUT"
-	dbMaxPoolSizeEnv      = "DB_MAX_POOL_SIZE"
-	jwtSecretEnv          = "JWT_SECRET"
-	jwtAlgorithmEnv       = "JWT_ALGORITHM"
-	jwtExpiredInSecEnv    = "JWT_EXPIRED_IN_SEC"
+	buildModeEnv              = "BUILD_MODE"
+	addressEnv                = "ADDRESS"
+	portEnv                   = "PORT"
+	logLevelEnv               = "LOG_LEVEL"
+	logFormatEnv              = "LOG_FORMAT"
+	corsAllowOriginsEnv       = "CORS_ALLOW_ORIGINS"
+	corsAllowHeadersEnv       = "CORS_ALLOW_HEADERS"
+	corsExposedHeadersEnv     = "CORS_EXPOSED_HEADERS"
+	dbConnUriEnv              = "DB_CONN_URI"
+	dbNameEnv                 = "DB_NAME"
+	dbHBIntervalEnv           = "DB_HEARTBEAT_INTERVAL"
+	dbLocalThresholdEnv       = "DB_LOCAL_THRESHOLD"
+	dbServerSelTimeoutEnv     = "DB_SERVER_SELECTION_TIMEOUT"
+	dbMaxPoolSizeEnv          = "DB_MAX_POOL_SIZE"
+	jwtSecretEnv              = "JWT_SECRET"
+	jwtAlgorithmEnv           = "JWT_ALGORITHM"
+	jwtExpiredInSecEnv        = "JWT_EXPIRED_IN_SEC"
+	whatsappDbNameEnv         = "WHATSAPP_DB_NAME"
+	whatsappQrCodeDirEnv      = "WHATSAPP_QC_CODE_DIR"
+	whatsappWebhookEnv        = "WHATSAPP_WEBHOOK"
+	whatsappWebhookEnabledEnv = "WHATSAPP_WEBHOOK_ENABLED"
+	whatsappWebhookEchoEnv    = "WHATSAPP_WEBHOOK_ECHO"
+	httpClientTlsEnv          = "HTTP_CLIENT_TLS"
 )
 
 var defaultCORSAllowOrigins = []string{"*"}
 var defaultCORSAllowHeaders = []string{"*"}
 var defaultCORSExposedHeaders = []string{"*"}
 
-const (
-	defaultBuildMode           = "dev"
-	defaultLogLevel            = "info"
-	defaultLogFormat           = "json"
-	defaultAddress             = "0.0.0.0"
-	defaultPort                = 80
-	defaultDbConnURI           = "mongodb://localhost:27017"
-	defaultDbName              = "apiDb"
-	defaultDbConnTimeout       = 30 * time.Second
-	defaultDbHeartbeatInterval = 10 * time.Second
-	defaultDbLocalThreshold    = 15 * time.Second
-	defaultDbServerSelTimeout  = 30 * time.Second
-	defaultDbMaxPoolSize       = 100
-	defaultJWTSecret           = "secret"
-	defaultJWTAlgorithm        = "HS256"
-	defaultJWTExpInSec         = 3600 // token will be expired in 1 hour
-)
-
 // Config provides all the possible configurations
 // FYI: viper will read the field name, such as `DBUser`, instead of `DB_USER`
 type Config struct {
-	BuildMode           string                 `config:"BUILD_MODE" validate:"oneof=dev stag prod"`
-	Address             string                 `config:"ADDRESS"`
-	Port                int                    `config:"PORT"`
-	CORSAllowOrigins    []string               `config:"CORS_ALLOW_ORIGINS"`
-	CORSAllowHeaders    []string               `config:"CORS_ALLOW_HEADERS"`
-	CORSExposedHeaders  []string               `config:"CORS_EXPOSED_HEADERS"`
-	LogLevel            string                 `config:"LOG_LEVEL" validate:"oneof=debug info warn error fatal panic"`
-	LogFormat           string                 `config:"LOG_FORMAT" validate:"oneof=text console json"`
-	DbConnURI           string                 `config:"DB_CONN_URI"`
-	DBName              string                 `config:"DB_NAME"`
-	DbConnTimeout       time.Duration          `config:"DB_CONN_TIMEOUT"`
-	DbHeartBeatInterval time.Duration          `config:"DB_HEARTBEAT_INTERVAL"`
-	DbLocalThreshold    time.Duration          `config:"DB_LOCAL_THRESHOLD"`
-	DbServerSelTimeout  time.Duration          `config:"DB_SERVER_SELECTION_TIMEOUT"`
-	DbMaxPoolSize       uint64                 `config:"DB_MAX_POOL_SIZE"`
-	JWTSecret           string                 `config:"JWT_SECRET"`
-	JWTAlgorithm        jwa.SignatureAlgorithm `config:"JWT_ALGORITHM"`
-	JWTExpiredInSec     int64                  `config:"JWT_EXPIRED_IN_SEC"`
+	BuildMode              string                 `config:"BUILD_MODE" validate:"oneof=dev stag prod"`
+	Address                string                 `config:"ADDRESS"`
+	Port                   int                    `config:"PORT"`
+	CORSAllowOrigins       []string               `config:"CORS_ALLOW_ORIGINS"`
+	CORSAllowHeaders       []string               `config:"CORS_ALLOW_HEADERS"`
+	CORSExposedHeaders     []string               `config:"CORS_EXPOSED_HEADERS"`
+	LogLevel               string                 `config:"LOG_LEVEL" validate:"oneof=debug info warn error fatal panic"`
+	LogFormat              string                 `config:"LOG_FORMAT" validate:"oneof=text console json"`
+	DbConnURI              string                 `config:"DB_CONN_URI"`
+	DBName                 string                 `config:"DB_NAME"`
+	DbConnTimeout          time.Duration          `config:"DB_CONN_TIMEOUT"`
+	DbHeartBeatInterval    time.Duration          `config:"DB_HEARTBEAT_INTERVAL"`
+	DbLocalThreshold       time.Duration          `config:"DB_LOCAL_THRESHOLD"`
+	DbServerSelTimeout     time.Duration          `config:"DB_SERVER_SELECTION_TIMEOUT"`
+	DbMaxPoolSize          uint64                 `config:"DB_MAX_POOL_SIZE"`
+	JWTSecret              string                 `config:"JWT_SECRET"`
+	JWTAlgorithm           jwa.SignatureAlgorithm `config:"JWT_ALGORITHM"`
+	JWTExpiredInSec        int64                  `config:"JWT_EXPIRED_IN_SEC"`
+	WhatsappDbName         string                 `config:"WHATSAPP_DB_NAME"`
+	WhatsappQrCodeDir      string                 `config:"WHATSAPP_QC_CODE_DIR"`
+	WhatsappWebhook        string                 `config:"WHATSAPP_WEBHOOK"`
+	WhatsappWebhookEnabled bool                   `config:"WHATSAPP_WEBHOOK_ENABLED"`
+	WhatsappWebhookEcho    bool                   `config:"WHATSAPP_WEBHOOK_ECHO"`
+	HttpClientTLS          bool                   `config:"HTTP_CLIENT_TLS"`
 }
 
 // Get returns the configuration loaded from the environment variable.
@@ -80,24 +74,30 @@ func Get() (*Config, error) {
 	var err error
 
 	c := Config{
-		BuildMode:           defaultBuildMode,
-		Address:             defaultAddress,
-		Port:                defaultPort,
-		LogLevel:            defaultLogLevel,
-		LogFormat:           defaultLogFormat,
-		CORSAllowOrigins:    defaultCORSAllowOrigins,
-		CORSAllowHeaders:    defaultCORSAllowHeaders,
-		CORSExposedHeaders:  defaultCORSExposedHeaders,
-		DbConnURI:           defaultDbConnURI,
-		DBName:              defaultDbName,
-		DbConnTimeout:       defaultDbConnTimeout,
-		DbHeartBeatInterval: defaultDbHeartbeatInterval,
-		DbLocalThreshold:    defaultDbLocalThreshold,
-		DbServerSelTimeout:  defaultDbServerSelTimeout,
-		DbMaxPoolSize:       defaultDbMaxPoolSize,
-		JWTSecret:           defaultJWTSecret,
-		JWTAlgorithm:        defaultJWTAlgorithm,
-		JWTExpiredInSec:     defaultJWTExpInSec,
+		BuildMode:              "dev",
+		Address:                "0.0.0.0",
+		Port:                   80,
+		LogLevel:               "info",
+		LogFormat:              "json",
+		CORSAllowOrigins:       defaultCORSAllowOrigins,
+		CORSAllowHeaders:       defaultCORSAllowHeaders,
+		CORSExposedHeaders:     defaultCORSExposedHeaders,
+		DbConnURI:              "mongodb://localhost:27017",
+		DBName:                 "whatsappDb",
+		DbConnTimeout:          30 * time.Second,
+		DbHeartBeatInterval:    10 * time.Second,
+		DbLocalThreshold:       15 * time.Second,
+		DbServerSelTimeout:     30 * time.Second,
+		DbMaxPoolSize:          100,
+		JWTSecret:              "secret",
+		JWTAlgorithm:           "HS256",
+		JWTExpiredInSec:        3600, // token will be expired in 1 hour,
+		WhatsappDbName:         "data/sqlitedb/datastore",
+		WhatsappQrCodeDir:      "./data/qrcode",
+		WhatsappWebhookEnabled: false,
+		WhatsappWebhook:        "http://localhost:8500/webhook",
+		WhatsappWebhookEcho:    true,
+		HttpClientTLS:          true,
 	}
 
 	// try to find the variable inside the environment variable
@@ -188,6 +188,42 @@ func (c *Config) validateAndLoadSystemEnv() error {
 		if err != nil {
 			return err
 		}
+	}
+
+	if os.Getenv(whatsappDbNameEnv) != "" {
+		c.WhatsappDbName = os.Getenv(whatsappDbNameEnv)
+	}
+	if os.Getenv(whatsappWebhookEnabledEnv) != "" {
+		// validates the boolean value
+		boolWhatsappWebhookEnabled, err := strconv.ParseBool(os.Getenv(whatsappWebhookEnabledEnv))
+		if err != nil {
+			return err
+		}
+		c.WhatsappWebhookEnabled = boolWhatsappWebhookEnabled
+	}
+	if os.Getenv(whatsappQrCodeDirEnv) != "" {
+		c.WhatsappQrCodeDir = os.Getenv(whatsappQrCodeDirEnv)
+	}
+	if os.Getenv(whatsappWebhookEnv) != "" {
+		c.WhatsappWebhook = os.Getenv(whatsappWebhookEnv)
+	}
+	if os.Getenv(whatsappWebhookEchoEnv) != "" {
+		// validates the boolean value
+		boolWhatsappWebhookEcho, err := strconv.ParseBool(os.Getenv(whatsappWebhookEchoEnv))
+		if err != nil {
+			return err
+		}
+		c.WhatsappWebhookEcho = boolWhatsappWebhookEcho
+	}
+
+	// http client
+	if os.Getenv(httpClientTlsEnv) != "" {
+		// validates the boolean value
+		boolHttpClientTLS, err := strconv.ParseBool(os.Getenv(httpClientTlsEnv))
+		if err != nil {
+			return err
+		}
+		c.HttpClientTLS = boolHttpClientTLS
 	}
 
 	return nil

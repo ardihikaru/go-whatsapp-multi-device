@@ -3,9 +3,9 @@ package storage
 
 import (
 	"context"
-	"github.com/ardihikaru/go-whatsapp-multi-device/pkg/utils/query"
 	"time"
 
+	"github.com/ardihikaru/go-modules/pkg/utils/query"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/mongo"
 	mopts "go.mongodb.org/mongo-driver/mongo/options"

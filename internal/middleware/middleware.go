@@ -1,8 +1,7 @@
 package middleware
 
 import (
-	"github.com/ardihikaru/go-whatsapp-multi-device/internal/logger"
-	svcUser "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/user"
+	"github.com/ardihikaru/go-modules/pkg/logger"
 )
 
 type ID string
@@ -26,23 +25,22 @@ const (
 	QueryLimitKey = "limit"
 	// QueryOffsetKey is the offset key to store query offset which is captured from the request Query parameters
 	QueryOffsetKey = "offset"
-	// QueryOffsetKey is the order key to store query offset which is captured from the request Query parameters
+	// QueryOrderKey is the order key to store query offset which is captured from the request Query parameters
 	QueryOrderKey = "order"
-	// QueryOffsetKey is the sort key to store query offset which is captured from the request Query parameters
+	// QuerySortKey is the sort key to store query offset which is captured from the request Query parameters
 	QuerySortKey = "soft"
 
-	// QueryOffsetKey is the filter key to store query offset which is captured from the request Query parameters
+	// QueryFilterKey is the filter key to store query offset which is captured from the request Query parameters
 	QueryFilterKey = "filter"
 
 	// IDKey is the identifier key to store ID which is captured from the request URL parameters
 	IDKey = "id"
 
-	// SessionKey is the context key to store JWT private claims which is captured from the request
-	SessionKey = "session"
+	// PhoneKey is the identifier key to store phone which is captured from the request URL parameters
+	PhoneKey = "phone"
 )
 
-// UserResource is a middleware resource for user
-type UserResource struct {
-	Svc *svcUser.Service
+// Resource is a middleware resource
+type Resource struct {
 	Log *logger.Logger
 }
