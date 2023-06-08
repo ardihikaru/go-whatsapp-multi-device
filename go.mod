@@ -3,12 +3,13 @@ module github.com/ardihikaru/go-whatsapp-multi-device
 go 1.20
 
 require (
-	github.com/ardihikaru/go-modules v0.0.0-20230608043331-da3c4ed67509
+	github.com/ardihikaru/go-modules v0.0.3
 	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/cors v1.2.1
 	github.com/lestrrat-go/jwx v1.2.25
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.1
+	go.mau.fi/whatsmeow v0.0.0-20230427180258-7f679583b39b
 	go.mongodb.org/mongo-driver v1.11.1
 	go.uber.org/zap v1.24.0
 )
@@ -33,7 +34,6 @@ require (
 	github.com/yougg/go-qrcode v0.0.0-20181009131600-c335135af91e // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20230427180258-7f679583b39b // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/crypto v0.8.0 // indirect
