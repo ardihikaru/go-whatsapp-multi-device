@@ -16,7 +16,7 @@ import (
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 )
 
-// SessionMainHandler handles all authentication related routes
+// SessionMainHandler handles all session related routes
 func SessionMainHandler(cfg *config.Config, db *storage.DataStoreMongo, log *logger.Logger,
 	whatsAppBot *botHook.WaManager, httpClient *http.Client, bcList *botHook.BotClientList) http.Handler {
 	r := chi.NewRouter()
@@ -38,14 +38,14 @@ func SessionMainHandler(cfg *config.Config, db *storage.DataStoreMongo, log *log
 			// extracts the phone on the URL parameter
 			r.Use(waM.WhatsappCtx)
 
-			r.Get("/", sessionConnect(sessionService, log)) // POST /auth/register - register a new WhatsApp account
+			r.Get("/", sessionConnect(sessionService, log)) // GET /api/session/{phone} - register a new session
 		})
 
 		r.Route("/phone/{phone}", func(r chi.Router) {
 			// extracts the phone on the URL parameter
 			r.Use(m.PhoneMiddlewareCtx)
 
-			r.Delete("/", sessionDisconnect(sessionService, log)) // POST /auth/register - register a new WhatsApp account
+			r.Delete("/", sessionDisconnect(sessionService, log)) // DELETE /api/session/{phone} - delete session
 		})
 	})
 
