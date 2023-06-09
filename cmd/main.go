@@ -39,6 +39,8 @@ func main() {
 	log.Info("starting WhatsApp multi-device API service. ",
 		zap.String("Version", Version),
 		zap.String("BuildMode", cfg.BuildMode),
+		zap.String("WhatsappDbName", cfg.WhatsappDbName),
+		zap.String("WhatsappQrCodeDir", cfg.WhatsappQrCodeDir),
 	)
 
 	// gracefully exit on keyboard interrupt

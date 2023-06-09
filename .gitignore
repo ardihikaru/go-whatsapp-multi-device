@@ -12,6 +12,10 @@ api-service
 # go vendor
 vendor/
 
+# environment variables
+.env
+.env.production
+
 # kept files and folders
 !data/.gitkeep
 
