@@ -92,7 +92,7 @@ func Get() (*Config, error) {
 		JWTSecret:              "secret",
 		JWTAlgorithm:           "HS256",
 		JWTExpiredInSec:        3600, // token will be expired in 1 hour,
-		WhatsappDbName:         "data/sqlitedb/datastore",
+		WhatsappDbName:         "./data/sqlitedb/datastore",
 		WhatsappQrCodeDir:      "./data/qrcode",
 		WhatsappWebhookEnabled: false,
 		WhatsappWebhook:        "http://localhost:8500/webhook",
