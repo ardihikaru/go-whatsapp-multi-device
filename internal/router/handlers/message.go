@@ -25,7 +25,7 @@ func MessageMainHandler(cfg *config.Config, db *storage.DataStoreMongo, log *log
 	// Initialize services
 	deviceService := deviceSvc.NewService(db, log)
 	sessionService := sessionSvc.NewService(deviceService, log, whatsAppBot, httpClient, cfg.WhatsappWebhook,
-		cfg.WhatsappQrCodeDir, cfg.WhatsappWebhookEcho, cfg.WhatsappWebhookEnabled, bcList)
+		cfg.WhatsappQrCodeDir, cfg.WhatsappWebhookEcho, cfg.WhatsappWebhookEnabled, cfg.WhatsappQrToTerminal, bcList)
 
 	r.Route("/", func(r chi.Router) {
 		r.Post("/", postMessage(sessionService, log)) // POST /api/message - register a new WhatsApp account

@@ -31,6 +31,7 @@ const (
 	whatsappQrCodeDirEnv      = "WHATSAPP_QC_CODE_DIR"
 	whatsappWebhookEnv        = "WHATSAPP_WEBHOOK"
 	whatsappWebhookEnabledEnv = "WHATSAPP_WEBHOOK_ENABLED"
+	WhatsappQrToTerminalEnv   = "WHATSAPP_QR_TO_TERMINAL"
 	whatsappWebhookEchoEnv    = "WHATSAPP_WEBHOOK_ECHO"
 	httpClientTlsEnv          = "HTTP_CLIENT_TLS"
 )
@@ -64,6 +65,7 @@ type Config struct {
 	WhatsappQrCodeDir      string                 `config:"WHATSAPP_QC_CODE_DIR"`
 	WhatsappWebhook        string                 `config:"WHATSAPP_WEBHOOK"`
 	WhatsappWebhookEnabled bool                   `config:"WHATSAPP_WEBHOOK_ENABLED"`
+	WhatsappQrToTerminal   bool                   `config:"WHATSAPP_QR_TO_TERMINAL"`
 	WhatsappWebhookEcho    bool                   `config:"WHATSAPP_WEBHOOK_ECHO"`
 	HttpClientTLS          bool                   `config:"HTTP_CLIENT_TLS"`
 }
@@ -95,6 +97,7 @@ func Get() (*Config, error) {
 		WhatsappDbName:         "./data/sqlitedb/datastore",
 		WhatsappQrCodeDir:      "./data/qrcode",
 		WhatsappWebhookEnabled: false,
+		WhatsappQrToTerminal:   true,
 		WhatsappWebhook:        "http://localhost:8500/webhook",
 		WhatsappWebhookEcho:    true,
 		HttpClientTLS:          true,
@@ -200,6 +203,14 @@ func (c *Config) validateAndLoadSystemEnv() error {
 			return err
 		}
 		c.WhatsappWebhookEnabled = boolWhatsappWebhookEnabled
+	}
+	if os.Getenv(WhatsappQrToTerminalEnv) != "" {
+		// validates the boolean value
+		boolWhatsappQrToTerminal, err := strconv.ParseBool(os.Getenv(WhatsappQrToTerminalEnv))
+		if err != nil {
+			return err
+		}
+		c.WhatsappQrToTerminal = boolWhatsappQrToTerminal
 	}
 	if os.Getenv(whatsappQrCodeDirEnv) != "" {
 		c.WhatsappQrCodeDir = os.Getenv(whatsappQrCodeDirEnv)
