@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"unicode/utf8"
 
@@ -199,4 +200,57 @@ func (p *MessagePayload) sanitize() {
 		_, i := utf8.DecodeRuneInString(p.To)
 		p.To = p.To[i:]
 	}
+}
+
+// IsOnWhatsapp verify if this phone number on Whatsapp or not
+func (s *Service) IsOnWhatsapp(phone string) (bool, error) {
+	var err error
+
+	// picks one random active client session
+	clientPhone := s.getRandomPhoneAsClient()
+	if clientPhone == nil {
+		return false, fmt.Errorf("no active session to be used")
+	}
+
+	phones := buildValidatedPhone(phone)
+	onWhatsapp, err := (*s.BotClients)[*clientPhone].Client.IsOnWhatsApp(phones)
+	if err != nil {
+		s.log.Error("failed to check on the Whatsapp Server", zap.Error(err))
+		return false, err
+	}
+	s.log.Debug(fmt.Sprintf("%v", onWhatsapp))
+
+	return onWhatsapp[0].IsIn, nil
+}
+
+func (s *Service) getRandomPhoneAsClient() *string {
+	// returns nil if no active session found
+	totalSession := len(*s.BotClients)
+	if totalSession == 0 {
+		return nil
+	}
+
+	randIter := rand.Intn(totalSession-0) + 0
+	for phone, _ := range *s.BotClients {
+		if randIter == 0 {
+			return &phone
+		}
+
+		randIter -= 1
+	}
+
+	return nil
+}
+
+func buildValidatedPhone(phone string) []string {
+	phones := make([]string, 1)
+
+	// enriches with `+` symbol if missing
+	if phone[0:1] != "+" {
+		phone = fmt.Sprintf("+%s", phone)
+	}
+
+	phones[0] = phone
+
+	return phones
 }
