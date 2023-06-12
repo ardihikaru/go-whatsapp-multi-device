@@ -32,12 +32,13 @@ type Service struct {
 	qrCodeDir    string
 	echoMsg      bool
 	wHookEnabled bool
+	qrToTerminal bool
 }
 
 // NewService creates a new auth service
 func NewService(deviceSvc *svc.Service, log *logger.Logger,
 	whatsAppBot *botHook.WaManager, httpClient *http.Client, webhookUrl, qrCodeDir string,
-	echoMsg, wHookEnabled bool, bcList *botHook.BotClientList) *Service {
+	echoMsg, wHookEnabled, qrToTerminal bool, bcList *botHook.BotClientList) *Service {
 
 	return &Service{
 		deviceSvc:    deviceSvc,
@@ -48,6 +49,7 @@ func NewService(deviceSvc *svc.Service, log *logger.Logger,
 		qrCodeDir:    qrCodeDir,
 		echoMsg:      echoMsg,
 		wHookEnabled: wHookEnabled,
+		qrToTerminal: qrToTerminal,
 		BotClients:   bcList,
 	}
 }
@@ -79,7 +81,7 @@ func (s *Service) Process(phone string, device svc.Device) {
 		// creates new bot client
 		s.log.Info("creating a new whatsapp session")
 		bot, err = botHook.NewWhatsappClient(s.httpClient, s.webhookUrl, s.whatsAppBot.Container, s.log,
-			phone, s.qrCodeDir, s.echoMsg, s.wHookEnabled)
+			phone, s.qrCodeDir, s.echoMsg, s.wHookEnabled, s.qrToTerminal)
 		if err != nil {
 			s.log.Warn("error create whatsapp client")
 			delete(*s.BotClients, phone)
