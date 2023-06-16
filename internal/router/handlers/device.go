@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"context"
-	m "github.com/ardihikaru/go-whatsapp-multi-device/internal/middleware"
+	"encoding/json"
+	"github.com/ardihikaru/go-modules/pkg/utils/query"
 	"net/http"
 
 	"github.com/ardihikaru/go-modules/pkg/logger"
@@ -10,6 +11,7 @@ import (
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 
+	m "github.com/ardihikaru/go-whatsapp-multi-device/internal/middleware"
 	deviceSvc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/device"
 	svc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/device"
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
@@ -25,6 +27,7 @@ func AuthMainHandler(db *storage.DataStoreMongo, log *logger.Logger) http.Handle
 	r.Route("/", func(r chi.Router) {
 
 		r.Post("/", devicePost(deviceService, log)) // POST /api/device - register a new WhatsApp account
+		r.Get("/", deviceList(deviceService, log))  // POST /api/device - register a new WhatsApp account
 
 		r.Route("/name/{id}", func(r chi.Router) {
 			// extracts the id on the URL parameter
@@ -42,6 +45,84 @@ func AuthMainHandler(db *storage.DataStoreMongo, log *logger.Logger) http.Handle
 	})
 
 	return r
+}
+
+// deviceList processes the request to list all devices
+func deviceList(svc *deviceSvc.Service, log *logger.Logger) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var err error
+
+		// extracts filter from the context and cast them into a string
+		var filterKey m.QueryFilter = m.QueryFilterKey
+		filter := r.Context().Value(filterKey).(string)
+
+		var filterParams query.FilterQueryParams
+
+		err = json.Unmarshal([]byte(filter), &filterParams)
+		if err != nil {
+			httputils.RenderErrResponse(w, r,
+				httputils.ResponseText("", httputils.RequestJSONExtractionFailed),
+				httputils.RequestJSONExtractionFailed,
+				http.StatusBadRequest, err)
+			return
+		}
+
+		// extracts limit from the context and cast them into a string
+		var limitKey m.QueryLimit = m.QueryLimitKey
+		limit := r.Context().Value(limitKey).(int64)
+
+		// extracts offset from the context and cast them into a string
+		var offsetKey m.QueryOffset = m.QueryOffsetKey
+		offset := r.Context().Value(offsetKey).(int64)
+
+		// extracts order from the context and cast them into a string
+		var orderKey m.QueryOrder = m.QueryOrderKey
+		order := r.Context().Value(orderKey).(string)
+
+		// extracts sort from the context and cast them into a string
+		var sortKey m.QuerySort = m.QuerySortKey
+		sort := r.Context().Value(sortKey).(string)
+
+		err = json.Unmarshal([]byte(filter), &filterParams)
+		if err != nil {
+			httputils.RenderErrResponse(w, r,
+				httputils.ResponseText("", httputils.RequestJSONExtractionFailed),
+				httputils.RequestJSONExtractionFailed,
+				http.StatusBadRequest, err)
+			return
+		}
+
+		// builds query parameters
+		params := httputils.GetQueryParams{
+			Limit:  limit,
+			Offset: offset,
+			Order:  order,
+			Sort:   sort,
+			Search: filterParams.Keyword,
+		}
+
+		// list all device data
+		total, devices, err := svc.GetDevices(r.Context(), params)
+		if err != nil {
+			log.Debug(httputils.ResponseText("", httputils.CreateDataFailed), zap.Error(err))
+			httputils.RenderErrResponse(w, r,
+				httputils.ResponseText("", httputils.CreateDataFailed),
+				httputils.CreateDataFailed,
+				http.StatusBadRequest, err)
+			return
+		}
+
+		// prepares response body
+		respBody := httputils.Response{
+			Success:     true,
+			Data:        devices,
+			MessageText: "fetch devices success",
+			Total:       total,
+		}
+
+		// renders OK response
+		_ = httputils.RenderOKResponse(w, r, respBody)
+	}
 }
 
 // devicePost processes the request to create new device data
