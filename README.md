@@ -147,4 +147,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
         * Example 1: `golangci-lint run cmd/...`
         * Example 2: `golangci-lint run pkg/...`
 
+* connect to mongo
+  * run following command:
+    ```shell
+    mongosh -u ardiUser -p --authenticationDatabase admin
+    ```
+  * then, input **your password**
+* show all databases:
+  ```shell
+  show dbs;
+  ```
+* show all collections:
+  ```shell
+  db.getCollectionNames();
+  ```
+
 <p> Copyright &copy; 2022 Private use in within the SatuMedis Development Team. All Rights Reserved.</p>
