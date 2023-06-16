@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/ardihikaru/go-modules/pkg/logger"
@@ -10,8 +11,9 @@ import (
 
 // RegisterPayload is the input JSON body captured from the register request
 type RegisterPayload struct {
-	Phone string `json:"phone"`
-	Name  string `json:"name"`
+	Phone   string `json:"phone"`
+	Name    string `json:"name"`
+	Webhook string `json:"webhook"`
 }
 
 // Device is the device object
@@ -32,6 +34,8 @@ type storage interface {
 	GetDeviceByJID(ctx context.Context, id string) (Device, error)
 	GetDevices(ctx context.Context, params httputils.GetQueryParams) (int64, []Device, error)
 	InsertDevice(ctx context.Context, doc Device) (Device, error)
+	UpdateDeviceName(ctx context.Context, id, deviceName string) error
+	UpdateWebhook(ctx context.Context, id, webhook string) error
 	UpdateJID(ctx context.Context, jid, id string) error
 }
 
@@ -56,6 +60,10 @@ func (s *Service) GetDeviceByID(ctx context.Context, id string) (Device, error) 
 
 // GetDeviceByPhone extracts device data based on the phone
 func (s *Service) GetDeviceByPhone(ctx context.Context, phone string) (Device, error) {
+	// enriches with `+` symbol if missing
+	if phone[0:1] != "+" {
+		phone = fmt.Sprintf("+%s", phone)
+	}
 	return s.storage.GetDeviceByPhone(ctx, phone)
 }
 
@@ -79,6 +87,16 @@ func (s *Service) UpdateJID(ctx context.Context, jid, id string) error {
 	return s.storage.UpdateJID(ctx, jid, id)
 }
 
+// UpdateDeviceName updates device name
+func (s *Service) UpdateDeviceName(ctx context.Context, id, deviceName string) error {
+	return s.storage.UpdateDeviceName(ctx, id, deviceName)
+}
+
+// UpdateWebhook updates device webhook
+func (s *Service) UpdateWebhook(ctx context.Context, id, webhook string) error {
+	return s.storage.UpdateWebhook(ctx, id, webhook)
+}
+
 func (s *Service) Register(ctx context.Context, payload RegisterPayload) (Device, error) {
 	var err error
 
@@ -94,6 +112,13 @@ func (s *Service) Register(ctx context.Context, payload RegisterPayload) (Device
 		Name:      payload.Name,
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
+	}
+
+	// validates if this phone exists in the database
+	// if error NOT found, means that this phone exist in the database
+	_, err = s.GetDeviceByPhone(ctx, payload.Phone)
+	if err == nil {
+		return Device{}, fmt.Errorf("phone exists")
 	}
 
 	device, err := s.InsertDevice(ctx, doc)

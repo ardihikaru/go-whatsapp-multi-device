@@ -106,7 +106,7 @@ func (d *DataStoreMongo) GetDeviceByPhone(ctx context.Context, phone string) (sv
 	var opts = options.FindOne()
 
 	// prepares the filter
-	filter := bson.D{primitive.E{Key: FnDevicesPhone, Value: fmt.Sprintf("+%s", phone)}}
+	filter := bson.D{primitive.E{Key: FnDevicesPhone, Value: phone}}
 
 	// finds document by ID and convert the cursor result to bson object
 	doc := DeviceDoc{}
@@ -250,6 +250,64 @@ func (d *DataStoreMongo) UpdateJID(ctx context.Context, jid, id string) error {
 	// prepares document to update
 	doc := bson.D{
 		{Key: FnDevicesJID, Value: jid},
+	}
+	docBson := bson.D{
+		{Key: "$set", Value: doc},
+	}
+
+	// finds document by ID and executes update action
+	_, err = collection.UpdateOne(ctx, filter, docBson)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateDeviceName updates device name
+func (d *DataStoreMongo) UpdateDeviceName(ctx context.Context, id, deviceName string) error {
+	collection := d.Client.Database(d.DBName).Collection(DeviceCollection)
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	// builds filter
+	filter := bson.D{{Key: FnDevicesId, Value: objID}}
+
+	// prepares document to update
+	doc := bson.D{
+		{Key: FnDevicesName, Value: deviceName},
+	}
+	docBson := bson.D{
+		{Key: "$set", Value: doc},
+	}
+
+	// finds document by ID and executes update action
+	_, err = collection.UpdateOne(ctx, filter, docBson)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateWebhook updates webhook
+func (d *DataStoreMongo) UpdateWebhook(ctx context.Context, id, webhook string) error {
+	collection := d.Client.Database(d.DBName).Collection(DeviceCollection)
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	// builds filter
+	filter := bson.D{{Key: FnDevicesId, Value: objID}}
+
+	// prepares document to update
+	doc := bson.D{
+		{Key: FnDevicesWebhookUrl, Value: webhook},
 	}
 	docBson := bson.D{
 		{Key: "$set", Value: doc},
