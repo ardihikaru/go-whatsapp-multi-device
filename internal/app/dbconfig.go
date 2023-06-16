@@ -8,6 +8,7 @@ import (
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/storage"
 )
 
+// InitializeDB initializes database
 func InitializeDB(cfg *config.Config, log *logger.Logger) *storage.DataStoreMongo {
 	// initializes persistent store
 	db, err := storage.NewDataStoreMongo(MakeDataStoreConfig(cfg))

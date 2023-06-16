@@ -75,6 +75,9 @@ func main() {
 	// logs that application is ready
 	log.Info("preparing to serve the request in => " + fmt.Sprintf("%s:%v", cfg.Address, cfg.Port))
 
+	// starts logged sessions on service running
+	app.AutoStartLoggedSessions(deps)
+
 	// shutdowns the RESTApi Server
 	<-c
 	log.Info("gracefully shutting down the system")
