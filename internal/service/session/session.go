@@ -105,7 +105,8 @@ func (s *Service) Process(phone string, device svc.Device) {
 		bot, err = botHook.LoginExistingWASession(s.httpClient, s.webhookUrl, s.whatsAppBot.Container, s.log,
 			device.JID, phone, s.echoMsg, s.wHookEnabled)
 		if err != nil {
-			s.log.Warn(fmt.Sprintf("error create whatsapp client with an existing JID -> %s", device.JID))
+			s.log.Warn(fmt.Sprintf("error create whatsapp client with an existing JID -> %s", device.JID),
+				zap.Error(err))
 			delete(*s.BotClients, phone)
 			return
 		}
