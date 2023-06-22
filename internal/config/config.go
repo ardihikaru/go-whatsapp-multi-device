@@ -29,10 +29,11 @@ const (
 	jwtExpiredInSecEnv        = "JWT_EXPIRED_IN_SEC"
 	whatsappDbNameEnv         = "WHATSAPP_DB_NAME"
 	whatsappQrCodeDirEnv      = "WHATSAPP_QC_CODE_DIR"
+	WhatsappQrToTerminalEnv   = "WHATSAPP_QR_TO_TERMINAL"
 	whatsappWebhookEnv        = "WHATSAPP_WEBHOOK"
 	whatsappWebhookEnabledEnv = "WHATSAPP_WEBHOOK_ENABLED"
-	WhatsappQrToTerminalEnv   = "WHATSAPP_QR_TO_TERMINAL"
 	whatsappWebhookEchoEnv    = "WHATSAPP_WEBHOOK_ECHO"
+	whatsappImageDirEnv       = "WHATSAPP_IMAGE_DIR"
 	httpClientTlsEnv          = "HTTP_CLIENT_TLS"
 )
 
@@ -63,10 +64,11 @@ type Config struct {
 	JWTExpiredInSec        int64                  `config:"JWT_EXPIRED_IN_SEC"`
 	WhatsappDbName         string                 `config:"WHATSAPP_DB_NAME"`
 	WhatsappQrCodeDir      string                 `config:"WHATSAPP_QC_CODE_DIR"`
+	WhatsappQrToTerminal   bool                   `config:"WHATSAPP_QR_TO_TERMINAL"`
 	WhatsappWebhook        string                 `config:"WHATSAPP_WEBHOOK"`
 	WhatsappWebhookEnabled bool                   `config:"WHATSAPP_WEBHOOK_ENABLED"`
-	WhatsappQrToTerminal   bool                   `config:"WHATSAPP_QR_TO_TERMINAL"`
 	WhatsappWebhookEcho    bool                   `config:"WHATSAPP_WEBHOOK_ECHO"`
+	WhatsappImageDir       string                 `config:"WHATSAPP_IMAGE_DIR"`
 	HttpClientTLS          bool                   `config:"HTTP_CLIENT_TLS"`
 }
 
@@ -96,10 +98,11 @@ func Get() (*Config, error) {
 		JWTExpiredInSec:        3600, // token will be expired in 1 hour,
 		WhatsappDbName:         "./data/sqlitedb/datastore",
 		WhatsappQrCodeDir:      "./data/qrcode",
-		WhatsappWebhookEnabled: false,
 		WhatsappQrToTerminal:   true,
 		WhatsappWebhook:        "http://localhost:8500/webhook",
+		WhatsappWebhookEnabled: false,
 		WhatsappWebhookEcho:    true,
+		WhatsappImageDir:       "./data/images",
 		HttpClientTLS:          true,
 	}
 
@@ -225,6 +228,9 @@ func (c *Config) validateAndLoadSystemEnv() error {
 			return err
 		}
 		c.WhatsappWebhookEcho = boolWhatsappWebhookEcho
+	}
+	if os.Getenv(whatsappImageDirEnv) != "" {
+		c.WhatsappImageDir = os.Getenv(whatsappImageDirEnv)
 	}
 
 	// http client
