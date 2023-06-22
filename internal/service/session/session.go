@@ -3,23 +3,15 @@ package session
 import (
 	"context"
 	"fmt"
-	"math/rand"
-	"net/http"
-	"unicode/utf8"
-
 	"go.mau.fi/whatsmeow/types"
 	"go.uber.org/zap"
+	"math/rand"
+	"net/http"
 
 	"github.com/ardihikaru/go-modules/pkg/logger"
 	botHook "github.com/ardihikaru/go-modules/pkg/whatsappbot/wawebhook"
 	svc "github.com/ardihikaru/go-whatsapp-multi-device/internal/service/device"
 )
-
-type MessagePayload struct {
-	From    string `json:"from"`
-	To      string `json:"to"`
-	Message string `json:"message"`
-}
 
 // Service prepares the interfaces related with this auth service
 type Service struct {
@@ -29,6 +21,7 @@ type Service struct {
 	BotClients   *botHook.BotClientList
 	httpClient   *http.Client
 	webhookUrl   string
+	imageDir     string
 	qrCodeDir    string
 	echoMsg      bool
 	wHookEnabled bool
@@ -37,7 +30,7 @@ type Service struct {
 
 // NewService creates a new auth service
 func NewService(deviceSvc *svc.Service, log *logger.Logger,
-	whatsAppBot *botHook.WaManager, httpClient *http.Client, webhookUrl, qrCodeDir string,
+	whatsAppBot *botHook.WaManager, httpClient *http.Client, webhookUrl, imageDir, qrCodeDir string,
 	echoMsg, wHookEnabled, qrToTerminal bool, bcList *botHook.BotClientList) *Service {
 
 	return &Service{
@@ -46,6 +39,7 @@ func NewService(deviceSvc *svc.Service, log *logger.Logger,
 		whatsAppBot:  whatsAppBot,
 		httpClient:   httpClient,
 		webhookUrl:   webhookUrl,
+		imageDir:     imageDir,
 		qrCodeDir:    qrCodeDir,
 		echoMsg:      echoMsg,
 		wHookEnabled: wHookEnabled,
@@ -80,7 +74,7 @@ func (s *Service) Process(phone string, device svc.Device) {
 	if device.JID == "" {
 		// creates new bot client
 		s.log.Info("creating a new whatsapp session")
-		bot, err = botHook.NewWhatsappClient(s.httpClient, s.webhookUrl, s.whatsAppBot.Container, s.log,
+		bot, err = botHook.NewWhatsappClient(s.httpClient, s.webhookUrl, s.imageDir, s.whatsAppBot.Container, s.log,
 			phone, s.qrCodeDir, s.echoMsg, s.wHookEnabled, s.qrToTerminal)
 		if err != nil {
 			s.log.Warn("error create whatsapp client")
@@ -102,10 +96,11 @@ func (s *Service) Process(phone string, device svc.Device) {
 		// opens an existing session
 		s.log.Info(fmt.Sprintf("reconnecting an existing whatsapp session with JID -> %s", device.JID))
 
-		bot, err = botHook.LoginExistingWASession(s.httpClient, s.webhookUrl, s.whatsAppBot.Container, s.log,
-			device.JID, phone, s.echoMsg, s.wHookEnabled)
+		bot, err = botHook.LoginExistingWASession(s.httpClient, s.webhookUrl, s.imageDir, s.whatsAppBot.Container,
+			s.log, device.JID, phone, s.echoMsg, s.wHookEnabled)
 		if err != nil {
-			s.log.Warn(fmt.Sprintf("error create whatsapp client with an existing JID -> %s", device.JID))
+			s.log.Warn(fmt.Sprintf("error create whatsapp client with an existing JID -> %s", device.JID),
+				zap.Error(err))
 			delete(*s.BotClients, phone)
 			return
 		}
@@ -146,9 +141,9 @@ func (s *Service) Disconnect(phone string) string {
 }
 
 // SendTextMessage sends a text message
-func (s *Service) SendTextMessage(payload MessagePayload) error {
-	payload.sanitize()
-	err := payload.validate()
+func (s *Service) SendTextMessage(payload botHook.MessagePayload) error {
+	payload.Sanitize()
+	err := payload.Validate()
 	if err != nil {
 		return err
 	}
@@ -176,31 +171,67 @@ func (s *Service) SendTextMessage(payload MessagePayload) error {
 	return nil
 }
 
+// SendImageMessage sends ann image-based message
+func (s *Service) SendImageMessage(payload botHook.MessagePayload) error {
+	payload.Sanitize()
+	err := payload.Validate()
+	if err != nil {
+		return err
+	}
+
+	// if device in From (=phone) does not exists, rejects
+	if _, ok := (*s.BotClients)[payload.From]; !ok {
+		return fmt.Errorf("no active session found for this device")
+	} else {
+		// if session is not ready yet, rejects
+		if (*s.BotClients)[payload.From] == nil {
+			return fmt.Errorf("session for this device is not ready yet")
+		}
+
+		// validates phone number and get the recipient
+		recipient, err := (*s.BotClients)[payload.From].ValidateAndGetRecipient(payload.To, true)
+		if err != nil {
+			s.log.Error(fmt.Sprintf("phone [%s] got validation error(s)", payload.To), zap.Error(err))
+			return fmt.Errorf("phone got validation error(s)")
+		}
+
+		// starts sending the message in a background
+		go s.sendImageMessageInBackground(recipient, payload)
+	}
+
+	return nil
+}
+
 // sendTextMessageInBackground sends a text message in a background
-func (s *Service) sendTextMessageInBackground(recipient *types.JID, payload MessagePayload) {
+func (s *Service) sendTextMessageInBackground(recipient *types.JID, payload botHook.MessagePayload) {
 	err := (*s.BotClients)[payload.From].SendMsg(*recipient, payload.Message)
 	if err != nil {
 		s.log.Error(fmt.Sprintf("failed to send the message to [%s]", payload.To), zap.Error(err))
 	}
 }
 
-// validate validates message payload
-func (p *MessagePayload) validate() error {
-	return nil
-}
+// sendImageMessageInBackground sends an image-based message in a background
+func (s *Service) sendImageMessageInBackground(recipient *types.JID, payload botHook.MessagePayload) {
+	var err error
 
-// sanitize sanitizes message payload
-func (p *MessagePayload) sanitize() {
-	// removes `+` symbol if exists
-	if p.From[0:1] == "+" {
-		_, i := utf8.DecodeRuneInString(p.From)
-		p.From = p.From[i:]
+	// builds image full path
+	imgPath := fmt.Sprintf("%s/%s", s.imageDir, payload.ImageFileName)
+
+	// uploads to whatsapp server
+	imgInBytes, uploaded, err := (*s.BotClients)[payload.From].UploadImgToWhatsapp(imgPath)
+	if err != nil {
+		s.log.Error(fmt.Sprintf("failed to upload file (=%s) to Whatsapp server", payload.ImageFileName), zap.Error(err))
+		return
 	}
 
-	// removes `+` symbol if exists
-	if p.To[0:1] == "+" {
-		_, i := utf8.DecodeRuneInString(p.To)
-		p.To = p.To[i:]
+	// prepares image information
+	contentType := http.DetectContentType(*imgInBytes)
+	fileLength := uint64(len(*imgInBytes))
+
+	// sends image message to whatsapp
+	err = (*s.BotClients)[payload.From].SendImgMsg(*recipient, uploaded, payload.ImageCaption, contentType, fileLength)
+	if err != nil {
+		s.log.Error(fmt.Sprintf("failed to send the image message to [%s]", payload.To), zap.Error(err))
 	}
 }
 
