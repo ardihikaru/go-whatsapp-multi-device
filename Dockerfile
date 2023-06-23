@@ -48,5 +48,12 @@ COPY --from=gobuild /go/src/github.com/ardihikaru/go-whatsapp-multi-device/BUILD
 RUN apt-get update
 RUN apt-get install -y ca-certificates
 
+RUN apt-get update && \
+    apt-get install -yq tzdata && \
+    ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+ENV TZ="Asia/Jakarta"
+#ENV TZ="Etc/GMT+7"
+
 EXPOSE 80 443
 ENTRYPOINT ["./api-service"]
