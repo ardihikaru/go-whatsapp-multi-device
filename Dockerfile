@@ -32,6 +32,7 @@ ADD internal ./internal
 RUN mkdir ./data
 RUN mkdir ./data/qrcode
 RUN mkdir ./data/sqlitedb
+RUN mkdir ./data/images
 RUN go mod download
 
 RUN go build -o api-service -ldflags "-X main.Version=$VERSION" \
@@ -42,6 +43,10 @@ FROM base AS release
 COPY --from=gobuild /go/src/github.com/ardihikaru/go-whatsapp-multi-device/api-service .
 COPY --from=gobuild /go/src/github.com/ardihikaru/go-whatsapp-multi-device/data .
 COPY --from=gobuild /go/src/github.com/ardihikaru/go-whatsapp-multi-device/BUILD.txt ./BUILD.txt
+
+# CERT PACKAGES
+RUN apt-get update
+RUN apt-get install -y ca-certificates
 
 EXPOSE 80 443
 ENTRYPOINT ["./api-service"]
