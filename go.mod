@@ -3,7 +3,7 @@ module github.com/ardihikaru/go-whatsapp-multi-device
 go 1.20
 
 require (
-	github.com/ardihikaru/go-modules v0.1.0
+	github.com/ardihikaru/go-modules v0.1.1
 	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/cors v1.2.1
 	github.com/lestrrat-go/jwx v1.2.25
