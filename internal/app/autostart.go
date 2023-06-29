@@ -14,7 +14,7 @@ func AutoStartLoggedSessions(deps *Dependencies) {
 	// initializes services
 	deviceService := deviceSvc.NewService(deps.DB, deps.Log)
 	sessionService := sessionSvc.NewService(deviceService, deps.Log, deps.WhatsAppBot, deps.HttpClient,
-		deps.Config.WhatsappWebhook, deps.Config.WhatsappImageDir, deps.Config.WhatsappQrCodeDir,
+		deps.Config.WhatsappImageDir, deps.Config.WhatsappQrCodeDir,
 		deps.Config.WhatsappWebhookEcho, deps.Config.WhatsappWebhookEnabled, deps.Config.WhatsappQrToTerminal,
 		deps.BotClients)
 

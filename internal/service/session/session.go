@@ -20,7 +20,6 @@ type Service struct {
 	whatsAppBot  *botHook.WaManager
 	BotClients   *botHook.BotClientList
 	httpClient   *http.Client
-	webhookUrl   string
 	imageDir     string
 	qrCodeDir    string
 	echoMsg      bool
@@ -30,7 +29,7 @@ type Service struct {
 
 // NewService creates a new auth service
 func NewService(deviceSvc *svc.Service, log *logger.Logger,
-	whatsAppBot *botHook.WaManager, httpClient *http.Client, webhookUrl, imageDir, qrCodeDir string,
+	whatsAppBot *botHook.WaManager, httpClient *http.Client, imageDir, qrCodeDir string,
 	echoMsg, wHookEnabled, qrToTerminal bool, bcList *botHook.BotClientList) *Service {
 
 	return &Service{
@@ -38,7 +37,6 @@ func NewService(deviceSvc *svc.Service, log *logger.Logger,
 		log:          log,
 		whatsAppBot:  whatsAppBot,
 		httpClient:   httpClient,
-		webhookUrl:   webhookUrl,
 		imageDir:     imageDir,
 		qrCodeDir:    qrCodeDir,
 		echoMsg:      echoMsg,
@@ -60,21 +58,29 @@ func (s *Service) New(ctx context.Context, phone string) error {
 	(*s.BotClients)[phone] = nil
 
 	// run in background process
-	go s.Process(phone, device)
+	go s.Process(ctx, phone, device)
 
 	return nil
 }
 
 // Process processes the request as new session or reconnect the existing session
-func (s *Service) Process(phone string, device svc.Device) {
+func (s *Service) Process(ctx context.Context, phone string, device svc.Device) {
 	var err error
 	var bot *botHook.WaBot
 	var thisJID string
 
+	// fetches device document
+	deviceDoc, err := s.deviceSvc.GetDeviceByPhone(ctx, phone)
+	if err != nil {
+		s.log.Warn(fmt.Sprintf("failed tp fetch device document by phone [%s]", phone))
+		delete(*s.BotClients, phone)
+		return
+	}
+
 	if device.JID == "" {
 		// creates new bot client
 		s.log.Info("creating a new whatsapp session")
-		bot, err = botHook.NewWhatsappClient(s.httpClient, s.webhookUrl, s.imageDir, s.whatsAppBot.Container, s.log,
+		bot, err = botHook.NewWhatsappClient(s.httpClient, deviceDoc.WebhookUrl, s.imageDir, s.whatsAppBot.Container, s.log,
 			phone, s.qrCodeDir, s.echoMsg, s.wHookEnabled, s.qrToTerminal)
 		if err != nil {
 			s.log.Warn("error create whatsapp client")
@@ -96,7 +102,7 @@ func (s *Service) Process(phone string, device svc.Device) {
 		// opens an existing session
 		s.log.Info(fmt.Sprintf("reconnecting an existing whatsapp session with JID -> %s", device.JID))
 
-		bot, err = botHook.LoginExistingWASession(s.httpClient, s.webhookUrl, s.imageDir, s.whatsAppBot.Container,
+		bot, err = botHook.LoginExistingWASession(s.httpClient, deviceDoc.WebhookUrl, s.imageDir, s.whatsAppBot.Container,
 			s.log, device.JID, phone, s.echoMsg, s.wHookEnabled)
 		if err != nil {
 			s.log.Warn(fmt.Sprintf("error create whatsapp client with an existing JID -> %s", device.JID),

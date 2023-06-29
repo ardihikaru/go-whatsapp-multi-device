@@ -30,7 +30,6 @@ const (
 	whatsappDbNameEnv         = "WHATSAPP_DB_NAME"
 	whatsappQrCodeDirEnv      = "WHATSAPP_QC_CODE_DIR"
 	WhatsappQrToTerminalEnv   = "WHATSAPP_QR_TO_TERMINAL"
-	whatsappWebhookEnv        = "WHATSAPP_WEBHOOK"
 	whatsappWebhookEnabledEnv = "WHATSAPP_WEBHOOK_ENABLED"
 	whatsappWebhookEchoEnv    = "WHATSAPP_WEBHOOK_ECHO"
 	whatsappImageDirEnv       = "WHATSAPP_IMAGE_DIR"
@@ -65,7 +64,6 @@ type Config struct {
 	WhatsappDbName         string                 `config:"WHATSAPP_DB_NAME"`
 	WhatsappQrCodeDir      string                 `config:"WHATSAPP_QC_CODE_DIR"`
 	WhatsappQrToTerminal   bool                   `config:"WHATSAPP_QR_TO_TERMINAL"`
-	WhatsappWebhook        string                 `config:"WHATSAPP_WEBHOOK"`
 	WhatsappWebhookEnabled bool                   `config:"WHATSAPP_WEBHOOK_ENABLED"`
 	WhatsappWebhookEcho    bool                   `config:"WHATSAPP_WEBHOOK_ECHO"`
 	WhatsappImageDir       string                 `config:"WHATSAPP_IMAGE_DIR"`
@@ -99,7 +97,6 @@ func Get() (*Config, error) {
 		WhatsappDbName:         "./data/sqlitedb/datastore",
 		WhatsappQrCodeDir:      "./data/qrcode",
 		WhatsappQrToTerminal:   true,
-		WhatsappWebhook:        "http://localhost:8500/webhook",
 		WhatsappWebhookEnabled: false,
 		WhatsappWebhookEcho:    true,
 		WhatsappImageDir:       "./data/images",
@@ -217,9 +214,6 @@ func (c *Config) validateAndLoadSystemEnv() error {
 	}
 	if os.Getenv(whatsappQrCodeDirEnv) != "" {
 		c.WhatsappQrCodeDir = os.Getenv(whatsappQrCodeDirEnv)
-	}
-	if os.Getenv(whatsappWebhookEnv) != "" {
-		c.WhatsappWebhook = os.Getenv(whatsappWebhookEnv)
 	}
 	if os.Getenv(whatsappWebhookEchoEnv) != "" {
 		// validates the boolean value
