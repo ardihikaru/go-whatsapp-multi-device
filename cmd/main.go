@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	botHook "github.com/ardihikaru/go-modules/pkg/whatsappbot/wawebhook"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,8 +9,9 @@ import (
 
 	"github.com/ardihikaru/go-modules/pkg/logger"
 	e "github.com/ardihikaru/go-modules/pkg/utils/error"
-	hc "github.com/ardihikaru/go-modules/pkg/utils/httpclient"
+	"github.com/ardihikaru/go-modules/pkg/utils/web"
 	wBot "github.com/ardihikaru/go-modules/pkg/whatsappbot"
+	botHook "github.com/ardihikaru/go-modules/pkg/whatsappbot/wawebhook"
 	"go.uber.org/zap"
 
 	"github.com/ardihikaru/go-whatsapp-multi-device/internal/app"
@@ -51,7 +51,7 @@ func main() {
 	db := app.InitializeDB(cfg, log)
 
 	// initializes http client
-	httpClient := hc.BuildHttpClient(cfg.HttpClientTLS)
+	httpClient := web.BuildHttpClient(cfg.HttpClientTLS)
 
 	// creates list to store created whatsapp bot clients
 	botClients := make(botHook.BotClientList)

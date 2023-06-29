@@ -22,9 +22,9 @@ func MessageMainHandler(cfg *config.Config, db *storage.DataStoreMongo, log *log
 	whatsAppBot *botHook.WaManager, httpClient *http.Client, bcList *botHook.BotClientList) http.Handler {
 	r := chi.NewRouter()
 
-	// Initialize services
+	// initializes services
 	deviceService := deviceSvc.NewService(db, log)
-	sessionService := sessionSvc.NewService(deviceService, log, whatsAppBot, httpClient, cfg.WhatsappWebhook,
+	sessionService := sessionSvc.NewService(deviceService, log, whatsAppBot, httpClient,
 		cfg.WhatsappImageDir, cfg.WhatsappQrCodeDir, cfg.WhatsappWebhookEcho, cfg.WhatsappWebhookEnabled,
 		cfg.WhatsappQrToTerminal, bcList)
 
