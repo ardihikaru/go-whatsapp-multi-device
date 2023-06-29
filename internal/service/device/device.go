@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ardihikaru/go-modules/pkg/logger"
+	"github.com/ardihikaru/go-modules/pkg/utils/common"
 	"github.com/ardihikaru/go-modules/pkg/utils/httputils"
 )
 
@@ -100,6 +101,8 @@ func (s *Service) UpdateWebhook(ctx context.Context, id, webhook string) error {
 func (s *Service) Register(ctx context.Context, payload RegisterPayload) (Device, error) {
 	var err error
 
+	payload.Sanitize()
+
 	// validates login data
 	err = payload.Validate()
 	if err != nil {
@@ -133,4 +136,10 @@ func (s *Service) Register(ctx context.Context, payload RegisterPayload) (Device
 func (d *RegisterPayload) Validate() error {
 
 	return nil
+}
+
+// Sanitize sanitizes the input data
+func (d *RegisterPayload) Sanitize() {
+	withPlusSymbol := true
+	d.Phone = common.SanitizePhone(d.Phone, &withPlusSymbol)
 }

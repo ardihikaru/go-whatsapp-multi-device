@@ -3,11 +3,11 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"github.com/ardihikaru/go-modules/pkg/utils/query"
 	"net/http"
 
 	"github.com/ardihikaru/go-modules/pkg/logger"
 	"github.com/ardihikaru/go-modules/pkg/utils/httputils"
+	"github.com/ardihikaru/go-modules/pkg/utils/query"
 	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 
@@ -26,8 +26,8 @@ func AuthMainHandler(db *storage.DataStoreMongo, log *logger.Logger) http.Handle
 
 	r.Route("/", func(r chi.Router) {
 
-		r.Post("/", devicePost(deviceService, log)) // POST /api/device - register a new WhatsApp account
-		r.Get("/", deviceList(deviceService, log))  // POST /api/device - register a new WhatsApp account
+		r.Post("/", devicePost(deviceService, log))
+		r.Get("/", deviceList(deviceService, log))
 
 		r.Route("/name/{id}", func(r chi.Router) {
 			// extracts the id on the URL parameter
