@@ -35,6 +35,13 @@ func AutoStartLoggedSessions(deps *Dependencies) {
 		for _, device := range devices {
 			// removes `+` symbol if exists
 			phone := device.Phone
+
+			// if JID is empty, ignore
+			if device.JID == "" {
+				deps.Log.Warn(fmt.Sprintf("phone number (%s) has no available session yet. skipped.", device.Phone))
+				continue
+			}
+
 			if phone[0:1] == "+" {
 				phone = phone[1:]
 			}
