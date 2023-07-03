@@ -30,9 +30,9 @@ ADD go.mod go.sum ./
 ADD cmd ./cmd
 ADD internal ./internal
 RUN mkdir ./data
-RUN mkdir ./data/qrcode
 RUN mkdir ./data/sqlitedb
 RUN mkdir ./data/images
+RUN mkdir ./data/images/qrcode
 RUN go mod download
 
 RUN go build -o api-service -ldflags "-X main.Version=$VERSION" \
