@@ -42,9 +42,46 @@ func AuthMainHandler(db *storage.DataStoreMongo, log *logger.Logger) http.Handle
 
 			r.Put("/", deviceWebhook(deviceService, log))
 		})
+
+		r.Route("/{id}", func(r chi.Router) {
+			// extracts the phone as id on the URL parameter
+			r.Use(m.MiddlewareIDCtx)
+
+			r.Get("/", getDeviceByPhone(deviceService, log))
+		})
 	})
 
 	return r
+}
+
+// getDeviceByPhone processes the request to verify if the designated phone on whatsapp or not
+func getDeviceByPhone(svc *deviceSvc.Service, log *logger.Logger) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// extracts phone from the context and cast them into a string
+		var idKey m.ID = m.IDKey
+		phone := r.Context().Value(idKey).(string)
+
+		// gets device document
+		device, err := svc.GetDeviceByPhone(r.Context(), phone)
+		if err != nil {
+			httputils.RenderErrResponse(w, r,
+				"device not found",
+				httputils.BadRequest,
+				http.StatusNoContent, nil)
+			return
+		}
+
+		// prepares response body
+		respBody := httputils.Response{
+			Success:     true,
+			Data:        device,
+			MessageText: "fetch success",
+			Total:       1,
+		}
+
+		// renders OK response
+		_ = httputils.RenderOKResponse(w, r, respBody)
+	}
 }
 
 // deviceList processes the request to list all devices
