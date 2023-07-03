@@ -95,7 +95,7 @@ func Get() (*Config, error) {
 		JWTAlgorithm:           "HS256",
 		JWTExpiredInSec:        3600, // token will be expired in 1 hour,
 		WhatsappDbName:         "./data/sqlitedb/datastore",
-		WhatsappQrCodeDir:      "./data/qrcode",
+		WhatsappQrCodeDir:      "./data/images/qrcode",
 		WhatsappQrToTerminal:   true,
 		WhatsappWebhookEnabled: false,
 		WhatsappWebhookEcho:    true,
