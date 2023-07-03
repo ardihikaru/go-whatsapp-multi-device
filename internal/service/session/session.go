@@ -58,32 +58,32 @@ func (s *Service) New(ctx context.Context, phone string) error {
 	(*s.BotClients)[phone] = nil
 
 	// run in background process
-	go s.Process(ctx, phone, device)
+	go s.Process(phone, device)
 
 	return nil
 }
 
 // Process processes the request as new session or reconnect the existing session
-func (s *Service) Process(ctx context.Context, phone string, device svc.Device) {
+func (s *Service) Process(phone string, device svc.Device) {
 	var err error
 	var bot *botHook.WaBot
 	var thisJID string
 
-	// fetches device document
-	deviceDoc, err := s.deviceSvc.GetDeviceByPhone(ctx, phone)
-	if err != nil {
-		s.log.Warn(fmt.Sprintf("failed tp fetch device document by phone [%s]", phone))
-		delete(*s.BotClients, phone)
-		return
-	}
-
 	if device.JID == "" {
 		// creates new bot client
 		s.log.Info("creating a new whatsapp session")
-		bot, err = botHook.NewWhatsappClient(s.httpClient, deviceDoc.WebhookUrl, s.imageDir, s.whatsAppBot.Container, s.log,
+		bot, err = botHook.NewWhatsappClient(s.httpClient, device.WebhookUrl, s.imageDir, s.whatsAppBot.Container, s.log,
 			phone, s.qrCodeDir, s.echoMsg, s.wHookEnabled, s.qrToTerminal)
 		if err != nil {
 			s.log.Warn("error create whatsapp client")
+			delete(*s.BotClients, phone)
+			return
+		}
+
+		// in one case, the user may not manage scan the QR Code, and it got a timeout
+		// in this case, the ID will be null
+		if bot.Client.Store.ID == nil {
+			s.log.Warn("failed to scan the QR Code due to a timeout")
 			delete(*s.BotClients, phone)
 			return
 		}
@@ -102,7 +102,7 @@ func (s *Service) Process(ctx context.Context, phone string, device svc.Device) 
 		// opens an existing session
 		s.log.Info(fmt.Sprintf("reconnecting an existing whatsapp session with JID -> %s", device.JID))
 
-		bot, err = botHook.LoginExistingWASession(s.httpClient, deviceDoc.WebhookUrl, s.imageDir, s.whatsAppBot.Container,
+		bot, err = botHook.LoginExistingWASession(s.httpClient, device.WebhookUrl, s.imageDir, s.whatsAppBot.Container,
 			s.log, device.JID, phone, s.echoMsg, s.wHookEnabled)
 		if err != nil {
 			s.log.Warn(fmt.Sprintf("error create whatsapp client with an existing JID -> %s", device.JID),
@@ -272,7 +272,14 @@ func (s *Service) getRandomPhoneAsClient() *string {
 	randIter := rand.Intn(totalSession-0) + 0
 	for phone, _ := range *s.BotClients {
 		if randIter == 0 {
-			return &phone
+			// fix bug for random selection
+			// in this case, the value is nil
+			if (*s.BotClients)[phone] == nil {
+				s.log.Warn(fmt.Sprintf("the selected phone (%s) is nil. trying to randomize other phone", phone))
+				return s.getRandomPhoneAsClient()
+			} else {
+				return &phone
+			}
 		}
 
 		randIter -= 1

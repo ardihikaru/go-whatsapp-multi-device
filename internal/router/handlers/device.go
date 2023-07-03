@@ -251,7 +251,7 @@ func deviceWebhook(svc *deviceSvc.Service, log *logger.Logger) func(http.Respons
 		}
 
 		// update webhook URL now
-		err = svc.UpdateWebhook(context.Background(), deviceId, reqPayload.Webhook)
+		err = svc.UpdateWebhook(context.Background(), deviceId, reqPayload.WebhookUrl)
 		if err != nil {
 			log.Warn("failed to update device name information")
 			return

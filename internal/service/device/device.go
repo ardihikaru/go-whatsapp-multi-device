@@ -12,9 +12,9 @@ import (
 
 // RegisterPayload is the input JSON body captured from the register request
 type RegisterPayload struct {
-	Phone   string `json:"phone"`
-	Name    string `json:"name"`
-	Webhook string `json:"webhook"`
+	Phone      string `json:"phone"`
+	Name       string `json:"name"`
+	WebhookUrl string `json:"webhook_url"`
 }
 
 // Device is the device object
@@ -111,10 +111,11 @@ func (s *Service) Register(ctx context.Context, payload RegisterPayload) (Device
 
 	// builds device object
 	doc := Device{
-		Phone:     payload.Phone,
-		Name:      payload.Name,
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
+		Phone:      payload.Phone,
+		Name:       payload.Name,
+		WebhookUrl: payload.WebhookUrl,
+		CreatedAt:  time.Now().UTC(),
+		UpdatedAt:  time.Now().UTC(),
 	}
 
 	// validates if this phone exists in the database
