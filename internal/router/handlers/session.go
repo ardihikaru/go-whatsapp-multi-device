@@ -130,11 +130,19 @@ func isOnWhatsapp(sessionService *sessionSvc.Service, log *logger.Logger) func(h
 				http.StatusBadRequest, nil)
 			return
 		}
+		// special case: no session active that can be utilized
+		if onWhatsapp == nil {
+			httputils.RenderErrResponse(w, r,
+				"no active session to use",
+				httputils.FailedToFetchData,
+				http.StatusNoContent, nil)
+			return
+		}
 
 		// prepares response body
 		respBody := httputils.Response{
 			Success:     true,
-			Data:        onWhatsapp,
+			Data:        *onWhatsapp,
 			MessageText: "fetch success",
 			Total:       1,
 		}

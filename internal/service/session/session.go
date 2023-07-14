@@ -242,24 +242,28 @@ func (s *Service) sendImageMessageInBackground(recipient *types.JID, payload bot
 }
 
 // IsOnWhatsapp verify if this phone number on Whatsapp or not
-func (s *Service) IsOnWhatsapp(phone string) (bool, error) {
+func (s *Service) IsOnWhatsapp(phone string) (*bool, error) {
+	var onWa *bool
 	var err error
 
 	// picks one random active client session
 	clientPhone := s.getRandomPhoneAsClient()
 	if clientPhone == nil {
-		return false, fmt.Errorf("no active session to be used")
+		s.log.Warn("no active session to be used")
+		return onWa, nil
 	}
 
 	phones := buildValidatedPhone(phone)
 	onWhatsapp, err := (*s.BotClients)[*clientPhone].Client.IsOnWhatsApp(phones)
 	if err != nil {
+		onWa = &onWhatsapp[0].IsIn
 		s.log.Error("failed to check on the Whatsapp Server", zap.Error(err))
-		return false, err
+		return onWa, err
 	}
 	s.log.Debug(fmt.Sprintf("%v", onWhatsapp))
 
-	return onWhatsapp[0].IsIn, nil
+	onWa = &onWhatsapp[0].IsIn
+	return onWa, nil
 }
 
 func (s *Service) getRandomPhoneAsClient() *string {
